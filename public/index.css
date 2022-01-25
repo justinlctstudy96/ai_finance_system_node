@@ -1,6 +1,4 @@
-body {
-    overflow: auto
-}
+body {}
 
 #navbar-container {
     padding-bottom: 10px;
@@ -28,34 +26,78 @@ body {
 
 #surveycaptureboard-container {
     display: flex;
-    /* width: 100%; */
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
     /* height: 1000px; */
 }
 
 #recordingcanvas-container {
     padding: 10px;
     border-radius: 5px;
-    border: black;
+    border: rgb(116, 115, 115);
     border-width: 1px;
     border-style: solid;
+    box-shadow: 5px 2px 2px gray;
 }
 
 #eyerecordpanel-container {
     height: 100%;
+    padding: 10px;
 }
 
-#question-container {}
+#question-container {
+    background: rgb(211, 200, 151);
+    padding-bottom: 40px;
+}
+
+#question-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 20px;
+}
+
+.question-id {
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    border-top: solid;
+    border-right: solid;
+    border-width: 1px;
+    /* border-top-right-radius: 5px; */
+    /* border-top-left-radius: 5px; */
+    border-color: black;
+    height: 20px;
+    border-top-left-radius: 5px;
+    box-shadow: -5px -2px 2px gray;
+}
+
+#current-question {
+    width: 100%;
+    padding-top: 20px;
+    font-size: 40px;
+    text-align: center;
+}
+
+#answer-status {
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
 
 .eyerecord-container {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
-    border: black;
+    border: rgb(116, 115, 115);
     border-width: 1px;
     border-style: solid;
     margin: 15px;
     height: 200px;
     width: 350px;
+    box-shadow: 5px 2px 2px gray;
 }
 
 .eyeinfo {
@@ -64,4 +106,76 @@ body {
     justify-content: space-around;
     font-size: 30px;
     line-height: 100%;
+}
+
+#question-button {
+    width: 100%;
+    font-size: 40px;
+    text-align: center;
+}
+
+.button-33 {
+    background-color: #c2fbd7;
+    border-radius: 100px;
+    box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset, rgba(44, 187, 99, .15) 0 1px 2px, rgba(44, 187, 99, .15) 0 2px 4px, rgba(44, 187, 99, .15) 0 4px 8px, rgba(44, 187, 99, .15) 0 8px 16px, rgba(44, 187, 99, .15) 0 16px 32px;
+    color: green;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-33:hover {
+    box-shadow: rgba(44, 187, 99, .35) 0 -25px 18px -14px inset, rgba(44, 187, 99, .25) 0 1px 2px, rgba(44, 187, 99, .25) 0 2px 4px, rgba(44, 187, 99, .25) 0 4px 8px, rgba(44, 187, 99, .25) 0 8px 16px, rgba(44, 187, 99, .25) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+}
+
+.answering {
+    background-color: red !important;
+    color: black
+}
+
+.answering-question-id {
+    background: rgb(211, 200, 151);
+    border-right: none;
+}
+
+.blur {
+    background: rgba(143, 103, 103, 0.368);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+}
+
+.show-blur {
+    background: rgba(143, 103, 103, 0.368);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    display: show !important
+}
+
+#survey-result-container {
+    height: 500px;
+    width: 500px;
+    background: white;
+    padding: 50px;
+    text-align: center;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }

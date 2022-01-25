@@ -3,12 +3,14 @@
 
 <head>
     <meta charset="utf-8">
+
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="index.css">
+
 </head>
 
 <body>
-    <div class="container">
+    <div id="container">
         <div id="navbar-container">
             <div id="navbar-content">
                 <div id="web-title">Muse Labs Engineering Ltd. - AI Finance Recording System</div>
@@ -20,19 +22,31 @@
                 <video class="input_video" hidden="true"></video>
                 <div class="">
                     <!-- <canvas class="output_canvas" width="1280px" height="720px"></canvas> -->
-                    <canvas class="output_canvas" width="960px" height="720px"></canvas>
+                    <!-- <canvas class="output_canvas" width="960px" height="720px"></canvas> -->
+                    <canvas class="output_canvas" width="900px" height="720px"></canvas>
                 </div>
             </div>
             <div id="eyerecordpanel-container">
                 <div id="question-container">
-                    Question 1
+                    <div id="question-list">
+                        <div id="question-1" class="question-id answering-question-id">1</div>
+                    </div>
+                    <div id="current-question">
+                        Question 1
+                    </div>
+                    <div id="answer-status">
+                        Waiting
+                    </div>
+                    <div id="question-button">
+                        <button type="button" id="start-answering" class="button-33">Start</button>
+                    </div>
                 </div>
                 <div class="eyerecord-container">
                     <div class="eyeinfo">
                         <canvas class="leye_canvas" width="100px" height="100px"></canvas> Left eye
                     </div>
                     <div class="eyerecordlog">
-
+                        <div id="left-eye-table"></div>
                     </div>
                 </div>
                 <div class="eyerecord-container">
@@ -40,10 +54,15 @@
                         <canvas class="reye_canvas" width="100px" height="100px"></canvas> Right eye
                     </div>
                     <div class="eyerecordlog">
-
+                        <div id="right-eye-table"></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="blur-div" class="blur">
+        <div id="survey-result-container">
+
         </div>
     </div>
 </body>
