@@ -1,3 +1,7 @@
+body {
+    overflow: auto
+}
+
 #navbar-container {
     padding-bottom: 10px;
 }
@@ -24,6 +28,40 @@
 
 #surveycaptureboard-container {
     display: flex;
+    /* width: 100%; */
+    /* height: 1000px; */
+}
+
+#recordingcanvas-container {
+    padding: 10px;
+    border-radius: 5px;
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#eyerecordpanel-container {
+    height: 100%;
+}
+
+#question-container {}
+
+.eyerecord-container {
     width: 100%;
-    height: 1000px;
+    padding: 10px;
+    border-radius: 5px;
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+    margin: 15px;
+    height: 200px;
+    width: 350px;
+}
+
+.eyeinfo {
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+    font-size: 30px;
+    line-height: 100%;
 }

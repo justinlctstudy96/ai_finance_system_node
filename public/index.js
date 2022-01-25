@@ -1,6 +1,7 @@
 const eyeThresh = 0.65;
 const eyeOpenThresh = 0.35;
-const sWidth = 1280;
+// const sWidth = 1280;
+const sWidth = 960;
 const sHeight = 720;
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
@@ -14,9 +15,16 @@ let endTime;
 let rOQueue, lOQueue;
 let rDQueue, lDQueue;
 
+// recording variables
+
+let eyeRecord = {}
+
+
 function onResults(results) {
-    // canvasCtx.canvas.width = window.innerWidth;
-    // canvasCtx.canvas.height = (canvasCtx.canvas.width / 1280) * 720;
+    // canvasCtx.canvas.width = window.innerWidth * 0.6;
+    // canvasCtx.canvas.height = (canvasCtx.canvas.width / 720) * 720;
+    // canvasCtx.canvas.height = window.innerHeight * 0.75;
+    // canvasCtx.canvas.width = (canvasCtx.canvas.height / 720) * 1280;
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.drawImage(

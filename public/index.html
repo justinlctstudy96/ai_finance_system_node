@@ -16,14 +16,33 @@
             <div id="line"></div>
         </div>
         <div id="surveycaptureboard-container">
-            <video class="input_video" hidden="true"></video>
-            <div class="">
-                <canvas class="output_canvas" width="1280px" height="720px"></canvas>
-                <!-- <canvas class="output_canvas" width="700px" height="393px"></canvas> -->
+            <div id="recordingcanvas-container">
+                <video class="input_video" hidden="true"></video>
+                <div class="">
+                    <!-- <canvas class="output_canvas" width="1280px" height="720px"></canvas> -->
+                    <canvas class="output_canvas" width="960px" height="720px"></canvas>
+                </div>
             </div>
             <div id="eyerecordpanel-container">
-                <canvas class="reye_canvas" width="100px" height="100px"></canvas>
-                <canvas class="leye_canvas" width="100px" height="100px"></canvas>
+                <div id="question-container">
+                    Question 1
+                </div>
+                <div class="eyerecord-container">
+                    <div class="eyeinfo">
+                        <canvas class="leye_canvas" width="100px" height="100px"></canvas> Left eye
+                    </div>
+                    <div class="eyerecordlog">
+
+                    </div>
+                </div>
+                <div class="eyerecord-container">
+                    <div class="eyeinfo">
+                        <canvas class="reye_canvas" width="100px" height="100px"></canvas> Right eye
+                    </div>
+                    <div class="eyerecordlog">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
