@@ -19,10 +19,10 @@
 	let answerMilliSecond = 0
 
 
-	let rOQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
-	    lOQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
-	let rDQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
-	    lDQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
+	let rOQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
+	    lOQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
+	let rDQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
+	    lDQueue = ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"];
 
 	let questionNumberDOM = document.getElementById("current-question")
 	let questionButtonDOM = document.getElementById("question-button")
@@ -36,159 +36,170 @@
 	    canvasCtx.drawImage(
 	        results.image, 0, 0, canvasElement.width, canvasElement.height);
 	    if (results.multiFaceLandmarks) {
-	        for (const landmarks of results.multiFaceLandmarks) {
-	            let rEye = landmarks && FACEMESH_RIGHT_EYE;
-	            let lEye = landmarks && FACEMESH_LEFT_EYE;
-	            let rIris = landmarks && FACEMESH_RIGHT_IRIS;
-	            let lIris = landmarks && FACEMESH_LEFT_IRIS;
-	            let rCenter, lCenter;
-	            let rP, lP;
-	            let rT, lT;
-	            let rOpen, lOpen;
-	            let rEyeStatus, lEyeStatus;
+	        if (results.multiFaceLandmarks.length == 0) {
+	            document.getElementsByClassName("eyerecord-container")[0].classList.add("detecting")
+	            document.getElementsByClassName("eyerecord-container")[1].classList.add("detecting")
+	            document.getElementById("eyeleft").innerHTML = `<div style="color:rgb(120, 223, 255);">Detecting...</div>`
+	            document.getElementById("eyeright").innerHTML = `<div style="color:rgb(120, 223, 255);">Detecting...</div>`
+	        } else {
+	            document.getElementsByClassName("eyerecord-container")[0].classList.remove("detecting")
+	            document.getElementsByClassName("eyerecord-container")[1].classList.remove("detecting")
+	            document.getElementById("eyeleft").innerHTML = ("Left")
+	            document.getElementById("eyeright").innerHTML = ("Right")
+	            for (const landmarks of results.multiFaceLandmarks) {
+	                let rEye = landmarks && FACEMESH_RIGHT_EYE;
+	                let lEye = landmarks && FACEMESH_LEFT_EYE;
+	                let rIris = landmarks && FACEMESH_RIGHT_IRIS;
+	                let lIris = landmarks && FACEMESH_LEFT_IRIS;
+	                let rCenter, lCenter;
+	                let rP, lP;
+	                let rT, lT;
+	                let rOpen, lOpen;
+	                let rEyeStatus, lEyeStatus;
 
-	            // console.log("rEye", rEye);
-	            // console.log("lEye", lEye);
-	            //eye
-	            // for(let i = 0; i < rEye.length; ++i){
-	            // 	drawPoint(landmarks[rEye[i][0]], 0);
-	            // 	drawPoint(landmarks[lEye[i][0]], 0);
-	            // }
-	            //right eye point
-	            // drawPoint(landmarks[155], 0);
-	            // drawPoint(landmarks[246], 0);
-	            // //left eye point
-	            // drawPoint(landmarks[362], 0);
-	            // drawPoint(landmarks[466], 0);
-	            // //right bottom top point
-	            // drawPoint(landmarks[145], 0);
-	            // drawPoint(landmarks[159], 0);
-	            // //left bottom top point
-	            // drawPoint(landmarks[374], 0);
-	            // drawPoint(landmarks[386], 0);
+	                // console.log("rEye", rEye);
+	                // console.log("lEye", lEye);
+	                //eye
+	                // for(let i = 0; i < rEye.length; ++i){
+	                // 	drawPoint(landmarks[rEye[i][0]], 0);
+	                // 	drawPoint(landmarks[lEye[i][0]], 0);
+	                // }
+	                //right eye point
+	                // drawPoint(landmarks[155], 0);
+	                // drawPoint(landmarks[246], 0);
+	                // //left eye point
+	                // drawPoint(landmarks[362], 0);
+	                // drawPoint(landmarks[466], 0);
+	                // //right bottom top point
+	                // drawPoint(landmarks[145], 0);
+	                // drawPoint(landmarks[159], 0);
+	                // //left bottom top point
+	                // drawPoint(landmarks[374], 0);
+	                // drawPoint(landmarks[386], 0);
 
-	            //iris
-	            // for(let i = 0; i < rIris.length; ++i){
-	            // 	drawPoint(landmarks[rIris[i][0]], 1);
-	            // 	drawPoint(landmarks[lIris[i][0]], 1);
-	            // }
+	                //iris
+	                // for(let i = 0; i < rIris.length; ++i){
+	                // 	drawPoint(landmarks[rIris[i][0]], 1);
+	                // 	drawPoint(landmarks[lIris[i][0]], 1);
+	                // }
 
-	            //iris center
-	            rCenter = drawCenter([landmarks[rIris[0][0]], landmarks[rIris[2][0]]]);
-	            lCenter = drawCenter([landmarks[lIris[0][0]], landmarks[lIris[2][0]]]);
+	                //iris center
+	                rCenter = drawCenter([landmarks[rIris[0][0]], landmarks[rIris[2][0]]]);
+	                lCenter = drawCenter([landmarks[lIris[0][0]], landmarks[lIris[2][0]]]);
 
-	            //cul distance & draw	P center = 0.6 ~ 1.4
-	            rP = pointDistance(landmarks[155], rCenter) / pointDistance(landmarks[246], rCenter);
-	            lP = pointDistance(landmarks[466], lCenter) / pointDistance(landmarks[362], lCenter);
+	                //cul distance & draw	P center = 0.6 ~ 1.4
+	                rP = pointDistance(landmarks[155], rCenter) / pointDistance(landmarks[246], rCenter);
+	                lP = pointDistance(landmarks[466], lCenter) / pointDistance(landmarks[362], lCenter);
 
-	            //eye is open/close   T center = 0.35
-	            rT = pointDistance(landmarks[145], landmarks[159]) / pointDistance(landmarks[145], landmarks[155]);
-	            lT = pointDistance(landmarks[374], landmarks[386]) / pointDistance(landmarks[374], landmarks[362]);
-	            console.log();
+	                //eye is open/close   T center = 0.35
+	                rT = pointDistance(landmarks[145], landmarks[159]) / pointDistance(landmarks[145], landmarks[155]);
+	                lT = pointDistance(landmarks[374], landmarks[386]) / pointDistance(landmarks[374], landmarks[362]);
+	                console.log();
 
-	            //logic
-	            //--eye open/close
-	            (rT > eyeOpenThresh) ? rOpen = "O": rOpen = "C";
-	            (lT > eyeOpenThresh) ? lOpen = "O": lOpen = "C";
-	            //--eye to left/right
-	            if (rP < eyeThresh) {
-	                rEyeStatus = "L";
-	            } else if (rP > (2 - eyeThresh)) {
-	                rEyeStatus = "R";
-	            } else {
-	                rEyeStatus = "C";
-	            }
-	            if (lP < eyeThresh) {
-	                lEyeStatus = "L";
-	            } else if (lP > (2 - eyeThresh)) {
-	                lEyeStatus = "R";
-	            } else {
-	                lEyeStatus = "C";
-	            }
+	                //logic
+	                //--eye open/close
+	                (rT > eyeOpenThresh) ? rOpen = "O": rOpen = "C";
+	                (lT > eyeOpenThresh) ? lOpen = "O": lOpen = "C";
+	                //--eye to left/right
+	                if (rP < eyeThresh) {
+	                    rEyeStatus = "L";
+	                } else if (rP > (2 - eyeThresh)) {
+	                    rEyeStatus = "R";
+	                } else {
+	                    rEyeStatus = "C";
+	                }
+	                if (lP < eyeThresh) {
+	                    lEyeStatus = "L";
+	                } else if (lP > (2 - eyeThresh)) {
+	                    lEyeStatus = "R";
+	                } else {
+	                    lEyeStatus = "C";
+	                }
 
-	            //draw canvas
-	            canvasCtx.font = "30px Arial";
-	            // canvasCtx.fillText(rP.toFixed(3), 300, 100);
-	            // canvasCtx.fillText(lP.toFixed(3), 600, 100);
-	            // canvasCtx.fillText(rT.toFixed(3), 300, 200);
-	            // canvasCtx.fillText(lT.toFixed(3), 600, 200);
-	            // canvasCtx.fillText(rEyeStatus, 300, 100);
-	            // canvasCtx.fillText(lEyeStatus, 600, 100);
-	            // canvasCtx.fillText(rOpen, 300, 200);
-	            // canvasCtx.fillText(lOpen, 600, 200);
+	                //draw canvas
+	                canvasCtx.font = "30px Arial";
+	                // canvasCtx.fillText(rP.toFixed(3), 300, 100);
+	                // canvasCtx.fillText(lP.toFixed(3), 600, 100);
+	                // canvasCtx.fillText(rT.toFixed(3), 300, 200);
+	                // canvasCtx.fillText(lT.toFixed(3), 600, 200);
+	                // canvasCtx.fillText(rEyeStatus, 300, 100);
+	                // canvasCtx.fillText(lEyeStatus, 600, 100);
+	                // canvasCtx.fillText(rOpen, 300, 200);
+	                // canvasCtx.fillText(lOpen, 600, 200);
 
-	            //cut eye canvas
-	            let rD = pointDistance(landmarks[155], landmarks[246]);
-	            let lD = pointDistance(landmarks[466], landmarks[362]);
+	                //cut eye canvas
+	                let rD = pointDistance(landmarks[155], landmarks[246]);
+	                let lD = pointDistance(landmarks[466], landmarks[362]);
 
-	            //timer
-	            endTime = new Date().getTime();
-	            if (endTime - startTime >= 100) {
-	                //right canvas
-	                rCtx.drawImage(results.image,
-	                    landmarks[246].x * sWidth - rD * 0.5,
-	                    landmarks[246].y * sHeight - rD * 0.5,
-	                    100,
-	                    60,
-	                    0,
-	                    0,
-	                    100,
-	                    60);
-	                //left canvas
-	                lCtx.drawImage(results.image,
-	                    landmarks[362].x * sWidth - lD * 0.5,
-	                    landmarks[362].y * sHeight - lD * 0.5,
-	                    100,
-	                    60,
-	                    0,
-	                    0,
-	                    100,
-	                    60);
+	                //timer
+	                endTime = new Date().getTime();
+	                if (endTime - startTime >= 100) {
+	                    //right canvas
+	                    rCtx.drawImage(results.image,
+	                        landmarks[246].x * sWidth - rD * 0.5,
+	                        landmarks[246].y * sHeight - rD * 0.5,
+	                        100,
+	                        60,
+	                        0,
+	                        0,
+	                        100,
+	                        60);
+	                    //left canvas
+	                    lCtx.drawImage(results.image,
+	                        landmarks[362].x * sWidth - lD * 0.5,
+	                        landmarks[362].y * sHeight - lD * 0.5,
+	                        100,
+	                        60,
+	                        0,
+	                        0,
+	                        100,
+	                        60);
 
-	                //queue
-	                //--right eye
-	                queueOperation(rOQueue, rOpen);
-	                queueOperation(rDQueue, rEyeStatus);
-	                //--left eye
-	                queueOperation(lOQueue, lOpen);
-	                queueOperation(lDQueue, lEyeStatus);
+	                    //queue
+	                    //--right eye
+	                    queueOperation(rOQueue, rOpen);
+	                    queueOperation(rDQueue, rEyeStatus);
+	                    //--left eye
+	                    queueOperation(lOQueue, lOpen);
+	                    queueOperation(lDQueue, lEyeStatus);
 
-	                updateEyeTable(lOQueue, lDQueue, rOQueue, rDQueue)
+	                    updateEyeTable((answerMilliSecond / 10).toFixed(1), lOQueue, lDQueue, rOQueue, rDQueue)
 
-	                // console.log("rP : ", rP.toFixed(3));
-	                // console.log("lP : ", lP.toFixed(3));
-	                // console.log("rT : ", rT.toFixed(3));
-	                // console.log("lT : ", lT.toFixed(3));
-	                // console.log("rEye : ", rEyeStatus);
-	                // console.log("lEye : ", lEyeStatus);
-	                // console.log("eyeOpen : ", rOpen & lOpen);
-	                // console.log("--------------------");
-	                startTime = endTime;
+	                    // console.log("rP : ", rP.toFixed(3));
+	                    // console.log("lP : ", lP.toFixed(3));
+	                    // console.log("rT : ", rT.toFixed(3));
+	                    // console.log("lT : ", lT.toFixed(3));
+	                    // console.log("rEye : ", rEyeStatus);
+	                    // console.log("lEye : ", lEyeStatus);
+	                    // console.log("eyeOpen : ", rOpen & lOpen);
+	                    // console.log("--------------------");
+	                    startTime = endTime;
 
-	                if (isSurveying) {
-	                    if (isAnswering) {
-	                        // console.log("isAnswering")
-	                        answerMilliSecond += 1
-	                        updateEyeRecord(answerMilliSecond, lOpen, rOpen, lEyeStatus, rEyeStatus);
-	                        answerStatusDOM.innerHTML = `${answerMilliSecond/10} sec`
-	                        console.log(surveyRecord)
-	                    } else {
+	                    if (isSurveying) {
+	                        if (isAnswering) {
+	                            // console.log("isAnswering")
+	                            answerMilliSecond += 1
+	                            updateEyeRecord(answerMilliSecond, lOpen, rOpen, lEyeStatus, rEyeStatus);
+	                            answerStatusDOM.innerHTML = `${answerMilliSecond/10} sec`
+	                            console.log(surveyRecord)
+	                        } else {
 
+	                        }
 	                    }
 	                }
+
+
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION,
+	                // 				{color: '#C0C0C070', lineWidth: 1});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, {color: '#000000'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYEBROW, {color: '#FF3030'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_IRIS, {color: '#FF3030'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYE, {color: '#000000'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYEBROW, {color: '#30FF30'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_IRIS, {color: '#FF3030'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_FACE_OVAL, {color: '#E0E0E0'});
+	                // drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, {color: '#E0E0E0'});
 	            }
-
-
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION,
-	            // 				{color: '#C0C0C070', lineWidth: 1});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, {color: '#000000'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYEBROW, {color: '#FF3030'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_IRIS, {color: '#FF3030'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYE, {color: '#000000'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYEBROW, {color: '#30FF30'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_IRIS, {color: '#FF3030'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_FACE_OVAL, {color: '#E0E0E0'});
-	            // drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, {color: '#E0E0E0'});
 	        }
 	    }
 	    canvasCtx.restore();
@@ -273,114 +284,127 @@
 	}
 
 	function queueOperation(queue, value) {
-	    if (queue.length < 20) {
+	    if (queue.length < 10) {
 	        queue.push(value);
-	    } else if (queue.length == 20) {
+	    } else if (queue.length == 10) {
 	        queue.shift();
 	        queue.push(value);
 	    }
 	    // console.log(queue);
 	}
 
-	function updateEyeTable(lOQueue, lDQueue, rOQueue, rDQueue) {
+	function updateEyeTable(second, lOQueue, lDQueue, rOQueue, rDQueue) {
+	    // <td>${(second-2).toFixed(1)}</td>
+	    // <td>${(second-1.9).toFixed(1)}</td>
+	    // <td>${(second-1.8).toFixed(1)}</td>
+	    // <td>${(second-1.7).toFixed(1)}</td>
+	    // <td>${(second-1.6).toFixed(1)}</td>
+	    // <td>${(second-1.5).toFixed(1)}</td>
+	    // <td>${(second-1.4).toFixed(1)}</td>
+	    // <td>${(second-1.3).toFixed(1)}</td>
+	    // <td>${(second-1.2).toFixed(1)}</td>
+	    // <td>${(second-1.1).toFixed(1)}</td>
+	    // <td>${lOQueue[10]}</td>
+	    //         <td>${lOQueue[11]}</td>
+	    //         <td>${lOQueue[12]}</td>
+	    //         <td>${lOQueue[13]}</td>
+	    //         <td>${lOQueue[14]}</td>
+	    //         <td>${lOQueue[15]}</td>
+	    //         <td>${lOQueue[16]}</td>
+	    //         <td>${lOQueue[17]}</td>
+	    //         <td>${lOQueue[18]}</td>
+	    //         <td>${lOQueue[19]}</td>
+	    // <td>${lDQueue[10]}</td>
+	    //         <td>${lDQueue[11]}</td>
+	    //         <td>${lDQueue[12]}</td>
+	    //         <td>${lDQueue[13]}</td>
+	    //         <td>${lDQueue[14]}</td>
+	    //         <td>${lDQueue[15]}</td>
+	    //         <td>${lDQueue[16]}</td>
+	    //         <td>${lDQueue[17]}</td>
+	    //         <td>${lDQueue[18]}</td>
+	    //         <td>${lDQueue[19]}</td>
+	    {
+	        /* <td>${rOQueue[10]}</td>
+	        	            <td>${rOQueue[11]}</td>
+	        	            <td>${rOQueue[12]}</td>
+	        	            <td>${rOQueue[13]}</td>
+	        	            <td>${rOQueue[14]}</td>
+	        	            <td>${rOQueue[15]}</td>
+	        	            <td>${rOQueue[16]}</td>
+	        	            <td>${rOQueue[17]}</td>
+	        	            <td>${rOQueue[18]}</td>
+	        	            <td>${rOQueue[19]}</td> */
+	    }
+	    // <td>${rDQueue[10]}</td>
+	    //         <td>${rDQueue[11]}</td>
+	    //         <td>${rDQueue[12]}</td>
+	    //         <td>${rDQueue[13]}</td>
+	    //         <td>${rDQueue[14]}</td>
+	    //         <td>${rDQueue[15]}</td>
+	    //         <td>${rDQueue[16]}</td>
+	    //         <td>${rDQueue[17]}</td>
+	    //         <td>${rDQueue[18]}</td>
+	    //         <td>${rDQueue[19]}</td>
 	    document.getElementById("left-eye-table").innerHTML = `
 	        <table>
-	        <tr>
-	            <td>${lOQueue[0]}</td>
-	            <td>${lOQueue[1]}</td>
-	            <td>${lOQueue[2]}</td>
-	            <td>${lOQueue[3]}</td>
-	            <td>${lOQueue[4]}</td>
-	            <td>${lOQueue[5]}</td>
-	            <td>${lOQueue[6]}</td>
-	            <td>${lOQueue[7]}</td>
-	            <td>${lOQueue[8]}</td>
-	            <td>${lOQueue[9]}</td>
-                <td>${lOQueue[10]}</td>
-	            <td>${lOQueue[11]}</td>
-	            <td>${lOQueue[12]}</td>
-	            <td>${lOQueue[13]}</td>
-	            <td>${lOQueue[14]}</td>
-	            <td>${lOQueue[15]}</td>
-	            <td>${lOQueue[16]}</td>
-	            <td>${lOQueue[17]}</td>
-	            <td>${lOQueue[18]}</td>
-	            <td>${lOQueue[19]}</td>
+            <tr>
+                <td>${(second-1)<0?"-":(second-1).toFixed(1)}</td>
+	            <td>${(second-0.9)<0?"-":(second-0.9).toFixed(1)}</td>
+	            <td>${(second-0.8)<0?"-":(second-0.8).toFixed(1)}</td>
+	            <td>${(second-0.7)<0?"-":(second-0.7).toFixed(1)}</td>
+	            <td>${(second-0.6)<0?"-":(second-0.6).toFixed(1)}</td>
+	            <td>${(second-0.5)<0?"-":(second-0.5).toFixed(1)}</td>
+	            <td>${(second-0.4)<0?"-":(second-0.4).toFixed(1)}</td>
+	            <td>${(second-0.3)<0?"-":(second-0.3).toFixed(1)}</td>
+	            <td>${(second-0.2)<0?"-":(second-0.2).toFixed(1)}</td>
+	            <td>${(second-0.1)<0?"-":(second-0.1).toFixed(1)}</td>
 	        </tr>
 	        <tr>
-	            <td>${lDQueue[0]}</td>
-	            <td>${lDQueue[1]}</td>
-	            <td>${lDQueue[2]}</td>
-	            <td>${lDQueue[3]}</td>
-	            <td>${lDQueue[4]}</td>
-	            <td>${lDQueue[5]}</td>
-	            <td>${lDQueue[6]}</td>
-	            <td>${lDQueue[7]}</td>
-	            <td>${lDQueue[8]}</td>
-	            <td>${lDQueue[9]}</td>
-                <td>${lDQueue[10]}</td>
-	            <td>${lDQueue[11]}</td>
-	            <td>${lDQueue[12]}</td>
-	            <td>${lDQueue[13]}</td>
-	            <td>${lDQueue[14]}</td>
-	            <td>${lDQueue[15]}</td>
-	            <td>${lDQueue[16]}</td>
-	            <td>${lDQueue[17]}</td>
-	            <td>${lDQueue[18]}</td>
-	            <td>${lDQueue[19]}</td>
+	            <td>${lOQueue[0]=="O"?lDQueue[0]:"X"}</td>
+	            <td>${lOQueue[1]=="O"?lDQueue[1]:"X"}</td>
+	            <td>${lOQueue[2]=="O"?lDQueue[2]:"X"}</td>
+	            <td>${lOQueue[3]=="O"?lDQueue[3]:"X"}</td>
+	            <td>${lOQueue[4]=="O"?lDQueue[4]:"X"}</td>
+	            <td>${lOQueue[5]=="O"?lDQueue[5]:"X"}</td>
+	            <td>${lOQueue[6]=="O"?lDQueue[6]:"X"}</td>
+	            <td>${lOQueue[7]=="O"?lDQueue[7]:"X"}</td>
+	            <td>${lOQueue[8]=="O"?lDQueue[8]:"X"}</td>
+	            <td>${lOQueue[9]=="O"?lDQueue[9]:"X"}</td>
 	        </tr>
 	    </table>
 	        `
 	    document.getElementById("right-eye-table").innerHTML = `
 	        <table>
-	        <tr>
-	            <td>${rOQueue[0]}</td>
-	            <td>${rOQueue[1]}</td>
-	            <td>${rOQueue[2]}</td>
-	            <td>${rOQueue[3]}</td>
-	            <td>${rOQueue[4]}</td>
-	            <td>${rOQueue[5]}</td>
-	            <td>${rOQueue[6]}</td>
-	            <td>${rOQueue[7]}</td>
-	            <td>${rOQueue[8]}</td>
-	            <td>${rOQueue[9]}</td>
-                <td>${rOQueue[10]}</td>
-	            <td>${rOQueue[11]}</td>
-	            <td>${rOQueue[12]}</td>
-	            <td>${rOQueue[13]}</td>
-	            <td>${rOQueue[14]}</td>
-	            <td>${rOQueue[15]}</td>
-	            <td>${rOQueue[16]}</td>
-	            <td>${rOQueue[17]}</td>
-	            <td>${rOQueue[18]}</td>
-	            <td>${rOQueue[19]}</td>
+            <tr>
+                <td>${(second-1)<0?"-":(second-1).toFixed(1)}</td>
+	            <td>${(second-0.9)<0?"-":(second-0.9).toFixed(1)}</td>
+	            <td>${(second-0.8)<0?"-":(second-0.8).toFixed(1)}</td>
+	            <td>${(second-0.7)<0?"-":(second-0.7).toFixed(1)}</td>
+	            <td>${(second-0.6)<0?"-":(second-0.6).toFixed(1)}</td>
+	            <td>${(second-0.5)<0?"-":(second-0.5).toFixed(1)}</td>
+	            <td>${(second-0.4)<0?"-":(second-0.4).toFixed(1)}</td>
+	            <td>${(second-0.3)<0?"-":(second-0.3).toFixed(1)}</td>
+	            <td>${(second-0.2)<0?"-":(second-0.2).toFixed(1)}</td>
+	            <td>${(second-0.1)<0?"-":(second-0.1).toFixed(1)}</td>
 	        </tr>
 	        <tr>
-	            <td>${rDQueue[0]}</td>
-	            <td>${rDQueue[1]}</td>
-	            <td>${rDQueue[2]}</td>
-	            <td>${rDQueue[3]}</td>
-	            <td>${rDQueue[4]}</td>
-	            <td>${rDQueue[5]}</td>
-	            <td>${rDQueue[6]}</td>
-	            <td>${rDQueue[7]}</td>
-	            <td>${rDQueue[8]}</td>
-	            <td>${rDQueue[9]}</td>
-                <td>${rDQueue[10]}</td>
-	            <td>${rDQueue[11]}</td>
-	            <td>${rDQueue[12]}</td>
-	            <td>${rDQueue[13]}</td>
-	            <td>${rDQueue[14]}</td>
-	            <td>${rDQueue[15]}</td>
-	            <td>${rDQueue[16]}</td>
-	            <td>${rDQueue[17]}</td>
-	            <td>${rDQueue[18]}</td>
-	            <td>${rDQueue[19]}</td>
+	            <td>${rOQueue[0]=="O"?rDQueue[0]:"X"}</td>
+	            <td>${rOQueue[1]=="O"?rDQueue[1]:"X"}</td>
+	            <td>${rOQueue[2]=="O"?rDQueue[2]:"X"}</td>
+	            <td>${rOQueue[3]=="O"?rDQueue[3]:"X"}</td>
+	            <td>${rOQueue[4]=="O"?rDQueue[4]:"X"}</td>
+	            <td>${rOQueue[5]=="O"?rDQueue[5]:"X"}</td>
+	            <td>${rOQueue[6]=="O"?rDQueue[6]:"X"}</td>
+	            <td>${rOQueue[7]=="O"?rDQueue[7]:"X"}</td>
+	            <td>${rOQueue[8]=="O"?rDQueue[8]:"X"}</td>
+	            <td>${rOQueue[9]=="O"?rDQueue[9]:"X"}</td>
 	        </tr>
 	    </table>
 	        `
 	}
 
+	let toggle_interval
 
 	function startSurveying() {
 	    isSurveying = true;
@@ -390,7 +414,10 @@
 	    questionButtonDOM.innerHTML = `<button type="button" id="stop-answering" class="button-33 answering"">Stop</button>`;
 	    document.getElementById("stop-answering").addEventListener("click", stopAnswering)
 	    surveyRecord[currentQuestionID.toString()] = {}
-
+	    toggle_interval = setInterval(() => {
+	        document.getElementById('toggle-circle').classList.toggle("answering-toggle");
+	    }, 500)
+	    document.getElementById("circle-container").classList.remove("hidden")
 
 	}
 
@@ -401,6 +428,7 @@
 	    questionButtonDOM.innerHTML = `<button type="button" id="stop-answering" class="button-33 answering"">Stop</button>`;
 	    document.getElementById("stop-answering").addEventListener("click", stopAnswering)
 	    surveyRecord[currentQuestionID.toString()] = {}
+	    toggle_interval = setInterval(() => { document.getElementById('eyerecordpanel-container').classList.toggle("answering-container") }, 1000)
 
 	}
 
@@ -410,7 +438,7 @@
 	    console.log("stopAnswering")
 	    questionButtonDOM.innerHTML = `
         <button type="button" id="start-answering" class="button-33">Start</button>
-        <button type="button" id="finish-survey" class="button-33">Finish</button>
+        <button type="button" id="finish-survey" class="button-33">Records</button>
         `
 	    document.getElementById("start-answering").addEventListener("click", startSurveying)
 	    questionNumberDOM.innerHTML = `Question ${currentQuestionID+1}`
@@ -418,24 +446,55 @@
 	    questionListDOM.innerHTML += `<div id="question-${currentQuestionID+1}" class="question-id answering-question-id" sty>${currentQuestionID+1}</div>`
 	    document.getElementById(`question-${currentQuestionID}`).classList.remove("answering-question-id")
 	    document.getElementById("finish-survey").addEventListener("click", finishSurvey)
-
+	    clearInterval(toggle_interval)
+	    document.getElementById('toggle-circle').classList.remove("answering-toggle");
+	    document.getElementById("circle-container").classList.add("hidden");
 	}
+
+
 
 	function finishSurvey() {
 	    isSurveying = false;
-	    document.getElementById("blur-div").classList = "show-blur"
+	    document.getElementById("question-eye-record").innerHTML = ''
 	    for (const questionID in surveyRecord) {
 	        if (surveyRecord.hasOwnProperty(questionID)) {
+	            document.getElementById("question-eye-record").innerHTML += `<div id="question-${questionID}-result" class="question-result-container"></div>`
+	            let resultInnerHTML = `
+                    <div class="question-number">Q${questionID}</div>
+                    <div class="question-table-container">
+                        <table id="question-${questionID}-table">
+                            <tr><th>Second</th><th>Status(L)</th><th>Status(R)</th></tr>
+                        `
+	            let duration = 0
+	            let accumulate_blink = 0
+	            let accumulate_move = 0
 	            for (const second in surveyRecord[questionID]) {
 	                if (surveyRecord[questionID].hasOwnProperty(second)) {
-	                    console.log(surveyRecord[questionID][second])
+	                    let info = surveyRecord[questionID][second]
+	                    if (info[0] != "O" || info[1] != "O") {
+	                        accumulate_blink += 1
+	                    }
+	                    if (info[2] != "C" || info[3] != "C") {
+	                        accumulate_move += 1
+	                    }
+	                    resultInnerHTML += `<tr><td>${second}</td><td>${info[0]=="O"?info[2]:"X"}</td><td>${info[1]=="O"?info[3]:"X"}</td></tr>`
+	                    duration = second
 	                }
 	            }
+	            resultInnerHTML += `</table></div>`
+	            let average_blink = (accumulate_blink / duration).toFixed(1)
+	            let average_move = (accumulate_move / duration).toFixed(1)
+	            resultInnerHTML += `
+                    <div class="question-cal-container">
+                        <div class="cal-result">Duration: ${duration} sec</div>
+                        <div class="cal-result">Blinking: ${average_blink}/sec</div>
+                        <div class="cal-result">Moving: ${average_move}/sec</div>
+                    </div>
+                `
+	            document.getElementById(`question-${questionID}-result`).innerHTML = resultInnerHTML
 	        }
 	    }
-	    surveyResultDOM = `
-
-        `
+	    document.getElementById("blur-div").classList = "show-blur"
 	}
 
 	function updateEyeRecord(answerMilliSecond, lOpen, rOpen, lEyeStatus, rEyeStatus) {
@@ -444,3 +503,6 @@
 	}
 
 	document.getElementById("start-answering").addEventListener("click", startSurveying)
+	document.getElementById("return").addEventListener("click", () => {
+	    document.getElementById("blur-div").classList = "blur"
+	})

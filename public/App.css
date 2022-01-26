@@ -12,13 +12,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 html {
     --secondaryTextColor: #333;
-    --primaryTextColor: #eee;
+    --primaryTextColor: #555;
     --cubic-bezier: cubic-bezier(0.12, 1.99, 0.23, 0.15);
 }
 
 * {
     font-family: "Poppins";
-    /* color: var(--primaryTextColor); */
+    color: var(--primaryTextColor);
 }
 
 

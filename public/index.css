@@ -1,7 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 body {}
 
+html {
+    --boxShadow: 0 4px 4px 0px #0004;
+}
+
 #navbar-container {
-    padding-bottom: 10px;
+    padding: 16px 0px;
 }
 
 #navbar-content {
@@ -15,8 +20,9 @@ body {}
 }
 
 #web-title {
-    /* font-size: max(2vmin, 10px); */
     font-size: 20px;
+    text-align: center;
+    padding: 20px;
 }
 
 #line {
@@ -29,8 +35,8 @@ body {}
     overflow: auto;
     width: 100%;
     height: 100%;
-    justify-content: space-around;
-    /* height: 1000px; */
+    justify-content: center;
+    padding: 10px;
 }
 
 #recordingcanvas-container {
@@ -38,18 +44,21 @@ body {}
     border-radius: 5px;
     border: rgb(116, 115, 115);
     border-width: 1px;
-    border-style: solid;
-    box-shadow: 5px 2px 2px gray;
+    background: rgb(241, 241, 241);
+    box-shadow: var(--boxShadow);
 }
 
 #eyerecordpanel-container {
     height: 100%;
-    padding: 10px;
+    margin-left: 5vw;
+    border-color: gray;
+    border-radius: 10px;
+    border-width: 1px;
+    box-shadow: var(--boxShadow);
 }
 
 #question-container {
-    background: rgb(211, 200, 151);
-    padding-bottom: 40px;
+    background: white;
 }
 
 #question-list {
@@ -60,29 +69,57 @@ body {}
 }
 
 .question-id {
-    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0px;
+    background-color: rgb(233, 233, 233);
     width: 100%;
     text-align: center;
-    border-top: solid;
-    border-right: solid;
-    border-width: 1px;
-    /* border-top-right-radius: 5px; */
-    /* border-top-left-radius: 5px; */
-    border-color: black;
+    box-shadow: var(--boxShadow);
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.answering-question-id {
+    background: rgb(120, 223, 255);
+    border-radius: 3px;
+}
+
+.question-sub-container {
+    width: 100%;
+}
+
+#recording-time-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#circle-container {
+    margin: 0px 8px;
+}
+
+.recording-circle {
+    background: rgba(255, 0, 0, 0);
+    border-radius: 20px;
+    width: 20px;
     height: 20px;
-    border-top-left-radius: 5px;
-    box-shadow: -5px -2px 2px gray;
+}
+
+.answering-toggle {
+    background: rgb(255, 0, 0) !important;
+    transition-duration: 0.3s
 }
 
 #current-question {
-    width: 100%;
-    padding-top: 20px;
+    padding-top: 15px;
     font-size: 40px;
     text-align: center;
 }
 
 #answer-status {
-    width: 100%;
     font-size: 20px;
     text-align: center;
 }
@@ -93,11 +130,11 @@ body {}
     border-radius: 5px;
     border: rgb(116, 115, 115);
     border-width: 1px;
-    border-style: solid;
     margin: 15px;
-    height: 200px;
+    height: 160px;
     width: 350px;
-    box-shadow: 5px 2px 2px gray;
+    box-shadow: var(--boxShadow);
+    background: rgb(241, 241, 241);
 }
 
 .eyeinfo {
@@ -106,18 +143,21 @@ body {}
     justify-content: space-around;
     font-size: 30px;
     line-height: 100%;
+    align-items: center;
+    padding: 20px 0px;
 }
 
 #question-button {
     width: 100%;
     font-size: 40px;
     text-align: center;
+    background: rgba(255, 255, 255, 0);
 }
 
 .button-33 {
-    background-color: #c2fbd7;
+    background-color: rgba(120, 224, 255, 0.726);
     border-radius: 100px;
-    box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset, rgba(44, 187, 99, .15) 0 1px 2px, rgba(44, 187, 99, .15) 0 2px 4px, rgba(44, 187, 99, .15) 0 4px 8px, rgba(44, 187, 99, .15) 0 8px 16px, rgba(44, 187, 99, .15) 0 16px 32px;
+    box-shadow: var(--boxShadow);
     color: green;
     cursor: pointer;
     display: inline-block;
@@ -134,18 +174,20 @@ body {}
 }
 
 .button-33:hover {
-    box-shadow: rgba(44, 187, 99, .35) 0 -25px 18px -14px inset, rgba(44, 187, 99, .25) 0 1px 2px, rgba(44, 187, 99, .25) 0 2px 4px, rgba(44, 187, 99, .25) 0 4px 8px, rgba(44, 187, 99, .25) 0 8px 16px, rgba(44, 187, 99, .25) 0 16px 32px;
+    box-shadow: var(--boxShadow);
     transform: scale(1.05) rotate(-1deg);
 }
 
 .answering {
-    background-color: red !important;
-    color: black
+    background-color: rgba(253, 45, 45, 0.438) !important;
+    /* background: radial-gradient(#e66464bb 10%, #9198e500 60%) !important; */
+    color: black;
+    transition-duration: 0.5s;
 }
 
-.answering-question-id {
-    background: rgb(211, 200, 151);
-    border-right: none;
+.detecting {
+    background-color: rgba(253, 45, 45, 0.438) !important;
+    transition-duration: 0.5s;
 }
 
 .blur {
@@ -170,7 +212,7 @@ body {}
 
 #survey-result-container {
     height: 500px;
-    width: 500px;
+    width: 800px;
     background: white;
     padding: 50px;
     text-align: center;
@@ -178,4 +220,109 @@ body {}
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+#question-eye-record {
+    height: 450px;
+    overflow: auto;
+}
+
+.question-result-container {
+    display: flex;
+    justify-content: space-around;
+    border: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: gray;
+    margin: 5px;
+}
+
+.cal-result {
+    float: left;
+    padding-top: 2px;
+}
+
+.question-number {
+    text-align: center;
+    height: 80px;
+    line-height: 80px;
+    font-weight: bold;
+}
+
+.question-cal-container {
+    display: flex;
+    flex-direction: column;
+    height: 80px;
+}
+
+.question-table-container {
+    overflow-x: scroll;
+    height: 80px;
+    width: 500px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* td {
+    width: 100px;
+    text-align: center;
+} */
+
+.question-table-container table {
+    border-collapse: collapse;
+    width: max-content;
+}
+
+.question-table-container table tr {
+    display: block;
+    float: left;
+}
+
+.question-table-container table th,
+.question-table-container table td {
+    display: block;
+    margin-right: 1px;
+}
+
+table {
+    width: 340px;
+    overflow: auto;
+}
+
+.eyeside {
+    width: 150px;
+}
+
+.leye_canvas {
+    border: solid;
+    border-width: 2px;
+    border-color: rgb(120, 223, 255);
+    border-radius: 5px;
+}
+
+.reye_canvas {
+    border: solid;
+    border-width: 2px;
+    border-color: rgb(120, 223, 255);
+    border-radius: 5px;
+}
+
+#image-plate {
+    /* height: 100%; */
+    height: 50px;
+    width: 70px;
+    padding-top: 20px;
+}
+
+#eye-status-instruction {
+    padding: 10px;
+}
+
+.instruction {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
 }
