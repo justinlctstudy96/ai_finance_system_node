@@ -57,8 +57,6 @@
 	                let rOpen, lOpen;
 	                let rEyeStatus, lEyeStatus;
 
-	                // console.log("rEye", rEye);
-	                // console.log("lEye", lEye);
 	                //eye
 	                // for(let i = 0; i < rEye.length; ++i){
 	                // 	drawPoint(landmarks[rEye[i][0]], 0);
@@ -177,7 +175,6 @@
 
 	                    if (isSurveying) {
 	                        if (isAnswering) {
-	                            // console.log("isAnswering")
 	                            answerMilliSecond += 1
 	                            updateEyeRecord(answerMilliSecond, lOpen, rOpen, lEyeStatus, rEyeStatus);
 	                            answerStatusDOM.innerHTML = `${answerMilliSecond/10} sec`
@@ -187,8 +184,6 @@
 	                        }
 	                    }
 	                }
-
-
 	                // drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION,
 	                // 				{color: '#C0C0C070', lineWidth: 1});
 	                // drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, {color: '#000000'});
@@ -290,62 +285,9 @@
 	        queue.shift();
 	        queue.push(value);
 	    }
-	    // console.log(queue);
 	}
 
 	function updateEyeTable(second, lOQueue, lDQueue, rOQueue, rDQueue) {
-	    // <td>${(second-2).toFixed(1)}</td>
-	    // <td>${(second-1.9).toFixed(1)}</td>
-	    // <td>${(second-1.8).toFixed(1)}</td>
-	    // <td>${(second-1.7).toFixed(1)}</td>
-	    // <td>${(second-1.6).toFixed(1)}</td>
-	    // <td>${(second-1.5).toFixed(1)}</td>
-	    // <td>${(second-1.4).toFixed(1)}</td>
-	    // <td>${(second-1.3).toFixed(1)}</td>
-	    // <td>${(second-1.2).toFixed(1)}</td>
-	    // <td>${(second-1.1).toFixed(1)}</td>
-	    // <td>${lOQueue[10]}</td>
-	    //         <td>${lOQueue[11]}</td>
-	    //         <td>${lOQueue[12]}</td>
-	    //         <td>${lOQueue[13]}</td>
-	    //         <td>${lOQueue[14]}</td>
-	    //         <td>${lOQueue[15]}</td>
-	    //         <td>${lOQueue[16]}</td>
-	    //         <td>${lOQueue[17]}</td>
-	    //         <td>${lOQueue[18]}</td>
-	    //         <td>${lOQueue[19]}</td>
-	    // <td>${lDQueue[10]}</td>
-	    //         <td>${lDQueue[11]}</td>
-	    //         <td>${lDQueue[12]}</td>
-	    //         <td>${lDQueue[13]}</td>
-	    //         <td>${lDQueue[14]}</td>
-	    //         <td>${lDQueue[15]}</td>
-	    //         <td>${lDQueue[16]}</td>
-	    //         <td>${lDQueue[17]}</td>
-	    //         <td>${lDQueue[18]}</td>
-	    //         <td>${lDQueue[19]}</td>
-	    {
-	        /* <td>${rOQueue[10]}</td>
-	        	            <td>${rOQueue[11]}</td>
-	        	            <td>${rOQueue[12]}</td>
-	        	            <td>${rOQueue[13]}</td>
-	        	            <td>${rOQueue[14]}</td>
-	        	            <td>${rOQueue[15]}</td>
-	        	            <td>${rOQueue[16]}</td>
-	        	            <td>${rOQueue[17]}</td>
-	        	            <td>${rOQueue[18]}</td>
-	        	            <td>${rOQueue[19]}</td> */
-	    }
-	    // <td>${rDQueue[10]}</td>
-	    //         <td>${rDQueue[11]}</td>
-	    //         <td>${rDQueue[12]}</td>
-	    //         <td>${rDQueue[13]}</td>
-	    //         <td>${rDQueue[14]}</td>
-	    //         <td>${rDQueue[15]}</td>
-	    //         <td>${rDQueue[16]}</td>
-	    //         <td>${rDQueue[17]}</td>
-	    //         <td>${rDQueue[18]}</td>
-	    //         <td>${rDQueue[19]}</td>
 	    document.getElementById("left-eye-table").innerHTML = `
 	        <table>
             <tr>
@@ -486,9 +428,9 @@
 	            let average_move = (accumulate_move / duration).toFixed(1)
 	            resultInnerHTML += `
                     <div class="question-cal-container">
-                        <div class="cal-result">Duration: ${duration} sec</div>
-                        <div class="cal-result">Blinking: ${average_blink}/sec</div>
-                        <div class="cal-result">Moving: ${average_move}/sec</div>
+                        <div class="cal-result"><b>Duration</b>: ${duration} sec</div>
+                        <div class="cal-result"><b>Blinking</b>: ${average_blink}/sec</div>
+                        <div class="cal-result"><b>Moving</b>: ${average_move}/sec</div>
                     </div>
                 `
 	            document.getElementById(`question-${questionID}-result`).innerHTML = resultInnerHTML
@@ -506,3 +448,54 @@
 	document.getElementById("return").addEventListener("click", () => {
 	    document.getElementById("blur-div").classList = "blur"
 	})
+
+
+
+
+
+	//////////////////////////////////audio/////////////////////////////////
+
+
+
+
+	const audioTest = async() => {
+	    if (navigator.mediaDevices.getUserMedia !== null) {
+	        const options = {
+	            video: false,
+	            audio: true,
+	        };
+	        try {
+	            const stream = await navigator.mediaDevices.getUserMedia(options);
+	            const audioCtx = new AudioContext();
+	            const analyser = audioCtx.createAnalyser();
+	            analyser.fftSize = 2048;
+	            const audioSrc = audioCtx.createMediaStreamSource(stream);
+	            audioSrc.connect(analyser);
+	            const data = new Uint8Array(analyser.frequencyBinCount);
+	        } catch (err) {
+	            // error handling
+	        }
+	    }
+	}
+
+	const analyserCanvas = document.getElementById("canvas-audio")
+
+	const ctx_audio = analyserCanvas.getContext('2d');
+	const draw = (dataParm) => {
+	    dataParm = [...dataParm];
+	    ctx_audio.fillStyle = 'white'; //white background          
+	    ctx_audio.lineWidth = 2; //width of candle/bar
+	    ctx_audio.strokeStyle = '#d5d4d5'; //color of candle/bar
+	    const space = analyserCanvas.current.width / dataParm.length;
+	    dataParm.forEach((value, i) => {
+	        ctx_audio.beginPath();
+	        ctx_audio.moveTo(space * i, analyserCanvas.current.height); //x,y
+	        ctx_audio.lineTo(space * i, analyserCanvas.current.height - value); //x,y
+	        ctx_audio.stroke();
+	    });
+	};
+	const loopingFunction = () => {
+	    requestAnimationFrame(loopingFunction);
+	    analyser.getByteFrequencyData(data);
+	    draw(data);
+	}

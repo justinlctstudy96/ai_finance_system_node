@@ -5,6 +5,7 @@ import * as path from "path";
 
 const app = express();
 
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/',function(req:Request,res:Response){
     res.sendFile(path.resolve("./public/covid.html"));
