@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="mic_activity" style="border: solid 1px #ccc;" width="30" height="150"></canvas>
+    <script>
+        const vox = VoxImplant.getInstance();
+        let javascriptNode;
+        vox.addEventListener(VoxImplant.Events.MicAccessResult, onMicAccessResult);
+
+        vox.init({
+                micRequired: true
+            })
+            .then(() => {
+                return vox.connect();
+            })
+            .catch(() => {
+                console.log('Can\'t connect to the Voximplant cloud.')
+            });
+
+        function onMicAccessResult(e) {
+            if (e.result) createMicActivityIndicator(e.stream);
+        }
+
+        function createMicActivityIndicator(stream) {
+            const audioContext = new AudioContext();
+            const analyser = audioContext.createAnalyser();
+            const microphone = audioContext.createMediaStreamSource(stream);
+            javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+            analyser.smoothingTimeConstant = 0.3;
+            analyser.fftSize = 1024;
+            microphone.connect(analyser);
+            analyser.connect(javascriptNode);
+            javascriptNode.connect(audioContext.destination);
+            const ctx = document.getElementById('mic_activity').getContext('2d');
+            javascriptNode.onaudioprocess = function() {
+                const array = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(array);
+                let values = 0;
+                const length = array.length;
+                for (let i = 0; i < length; i++) {
+                    values += array[i];
+                }
+                const average = values / length;
+                ctx.clearRect(0, 0, 30, 150);
+                const grad = ctx.createLinearGradient(1, 1, 28, 148);
+                grad.addColorStop(0, '#FF0000');
+                grad.addColorStop(0.5, 'yellow');
+                grad.addColorStop(1, '#00FF00');
+                ctx.fillStyle = grad;
+                ctx.fillRect(1, 148 - average, 28, 148);
+            }
+        }
+    </script>
+</body>
+
+</html>

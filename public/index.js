@@ -458,44 +458,164 @@
 
 
 
-	const audioTest = async() => {
-	    if (navigator.mediaDevices.getUserMedia !== null) {
-	        const options = {
-	            video: false,
-	            audio: true,
-	        };
-	        try {
-	            const stream = await navigator.mediaDevices.getUserMedia(options);
-	            const audioCtx = new AudioContext();
-	            const analyser = audioCtx.createAnalyser();
-	            analyser.fftSize = 2048;
-	            const audioSrc = audioCtx.createMediaStreamSource(stream);
-	            audioSrc.connect(analyser);
-	            const data = new Uint8Array(analyser.frequencyBinCount);
-	        } catch (err) {
-	            // error handling
-	        }
+	// const audioTest = async() => {
+	//     if (navigator.mediaDevices.getUserMedia !== null) {
+	//         const options = {
+	//             video: false,
+	//             audio: true,
+	//         };
+	//         try {
+	//             const stream = await navigator.mediaDevices.getUserMedia(options);
+	//             const audioCtx = new AudioContext();
+	//             const analyser = audioCtx.createAnalyser();
+	//             analyser.fftSize = 2048;
+	//             const audioSrc = audioCtx.createMediaStreamSource(stream);
+	//             audioSrc.connect(analyser);
+	//             const data = new Uint8Array(analyser.frequencyBinCount);
+	//         } catch (err) {
+	//             // error handling
+	//         }
+	//     }
+	// }
+
+	// const analyserCanvas = document.getElementById("canvas-audio")
+
+	// const ctx_audio = analyserCanvas.getContext('2d');
+	// const draw = (dataParm) => {
+	//     dataParm = [...dataParm];
+	//     ctx_audio.fillStyle = 'white'; //white background          
+	//     ctx_audio.lineWidth = 2; //width of candle/bar
+	//     ctx_audio.strokeStyle = '#d5d4d5'; //color of candle/bar
+	//     const space = analyserCanvas.current.width / dataParm.length;
+	//     dataParm.forEach((value, i) => {
+	//         ctx_audio.beginPath();
+	//         ctx_audio.moveTo(space * i, analyserCanvas.current.height); //x,y
+	//         ctx_audio.lineTo(space * i, analyserCanvas.current.height - value); //x,y
+	//         ctx_audio.stroke();
+	//     });
+	// };
+	// const loopingFunction = () => {
+	//     requestAnimationFrame(loopingFunction);
+	//     analyser.getByteFrequencyData(data);
+	//     draw(data);
+	// }
+
+	// loopingFunction()
+
+
+	// window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	// navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+
+	// var s = document.getElementById('s');
+	// var p = document.getElementById('p');
+	// var timer;
+	// var context = new AudioContext();
+	// navigator.getUserMedia({ audio: true }, function(stream) {
+	//     //把要做的事情寫在這邊
+	//     var microphone = context.createMediaStreamSource(stream);
+	//     var analyser = context.createAnalyser();
+	//     microphone.connect(analyser);
+	//     analyser.connect(context.destination);
+
+	//     analyser.fftSize = 2048;
+	//     var bufferLength = analyser.frequencyBinCount;
+	//     var dataArray = new Uint8Array(analyser.fftSize);
+	//     //analyser.getByteFrequencyData(dataArray);
+
+	//     s.onclick = function() {
+	//         clearTimeout(timer);
+	//     };
+
+	//     p.onclick = function() {
+	//         update();
+	//     };
+
+	//     update();
+
+	//     function update() {
+	//         // console.log('nani')
+	//         console.log(dataArray);
+	//         analyser.getByteFrequencyData(dataArray);
+	//         timer = setTimeout(update, 20);
+	//     }
+
+	// }, function() {
+	//     console.log('error');
+	// });
+
+	var constraints = {
+	    audio: true,
+	    video: false
+	}
+	var promise = navigator.mediaDevices.getUserMedia(constraints);
+
+	function autoCorrelate(buf, sampleRate) {
+	    var SIZE = buf.length;
+	    var MAX_SAMPLES = Math.floor(SIZE / 2);
+	    var best_offset = -1;
+	    var best_correlation = 0;
+	    var rms = 0;
+	    var foundGoodCorrelation = false;
+	    var correlations = new Array(MAX_SAMPLES);
+	    for (var i = 0; i < SIZE; i++) {
+	        var val = buf[i];
+	        rms += val * val;
 	    }
+	    rms = Math.sqrt(rms / SIZE);
+	    if (rms < 0.01) return -1;
+	    var lastCorrelation = 1;
+	    for (var offset = 0; offset < MAX_SAMPLES; offset++) {
+	        var correlation = 0;
+	        for (var i = 0; i < MAX_SAMPLES; i++) {
+	            correlation += Math.abs((buf[i]) - (buf[i + offset]));
+	        }
+	        correlation = 1 - (correlation / MAX_SAMPLES);
+	        correlations[offset] = correlation; // store it, for the tweaking we need to do below. if ((correlation > 0.9) && (correlation > lastCorrelation)) {
+	        foundGoodCorrelation = true;
+	        if (correlation > best_correlation) {
+	            best_correlation = correlation;
+	            best_offset = offset;
+	        } else if (foundGoodCorrelation) {
+	            var shift = (correlations[best_offset + 1] - correlations[best_offset - 1]) / correlations[best_offset];
+	            return sampleRate / (best_offset + (8 * shift));
+	        }
+	        lastCorrelation = correlation;
+	    }
+	    if (best_correlation > 0.01) {
+	        return sampleRate / best_offset;
+	    }
+	    return -1;
 	}
+	promise.then(function(stream) {
+	    var canvas = document.getElementById('canvas');
+	    var canvasCtx = canvas.getContext("2d");
+	    var audioCtx = new AudioContext();
+	    var source = audioCtx.createMediaStreamSource(stream);
+	    var analyser = audioCtx.createAnalyser();
+	    source.connect(analyser);
+	    analyser.fftSize = 256;
+	    var bufferLength = analyser.frequencyBinCount;
+	    var dataArray = new Uint8Array(bufferLength);
+	    var timeDataArray = new Float32Array(bufferLength);
+	    var drawVisual;
 
-	const analyserCanvas = document.getElementById("canvas-audio")
+	    function draw() {
 
-	const ctx_audio = analyserCanvas.getContext('2d');
-	const draw = (dataParm) => {
-	    dataParm = [...dataParm];
-	    ctx_audio.fillStyle = 'white'; //white background          
-	    ctx_audio.lineWidth = 2; //width of candle/bar
-	    ctx_audio.strokeStyle = '#d5d4d5'; //color of candle/bar
-	    const space = analyserCanvas.current.width / dataParm.length;
-	    dataParm.forEach((value, i) => {
-	        ctx_audio.beginPath();
-	        ctx_audio.moveTo(space * i, analyserCanvas.current.height); //x,y
-	        ctx_audio.lineTo(space * i, analyserCanvas.current.height - value); //x,y
-	        ctx_audio.stroke();
-	    });
-	};
-	const loopingFunction = () => {
-	    requestAnimationFrame(loopingFunction);
-	    analyser.getByteFrequencyData(data);
-	    draw(data);
-	}
+	        drawVisual = requestAnimationFrame(draw);
+	        analyser.getByteFrequencyData(dataArray);
+	        canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+	        canvasCtx.fillRect(0, 0, 400, 100);
+	        var barWidth = 400 / bufferLength;
+	        var barHeight;
+	        var x = 0;
+	        for (var i = 0; i < bufferLength; i++) {
+
+	            barHeight = dataArray[i];
+	            canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+	            canvasCtx.fillRect(x, 100 - barHeight, barWidth, barHeight);
+	            x += barWidth;
+	        }
+	    };
+	    draw();
+	    console.log("error")
+	});
